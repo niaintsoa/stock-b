@@ -33,6 +33,7 @@ class CreateCustomer extends CreateRecord
             'profile_type' => get_class($customer),
         ]);
 
-        Password::broker()->sendResetLink(['email' => $user->email]);
+        $token = Password::broker()->createToken($user);
+        $user->notify(new \App\Notifications\WelcomeCustomerNotification($token));
     }
 }
