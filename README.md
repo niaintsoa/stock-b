@@ -21,40 +21,32 @@ cd test-biloki
 cp .env.example .env
 ```
 
-### 2. Démarrer les conteneurs Docker (Laravel Sail)
+### 2. Installation simplifiée via Makefile (Docker)
 
-Ce projet utilise Laravel Sail pour l'environnement de développement (PHP, MySQL, Mailpit/Mailhog).
-
-```bash
-# Installez les dépendances Composer via un conteneur temporaire
-docker run --rm \
-    -u "$(id -u):$(id -g)" \
-    -v "$(pwd):/var/www/html" \
-    -w /var/www/html \
-    laravelsail/php84-composer:latest \
-    composer install --ignore-platform-reqs
-
-# Démarrez les conteneurs en arrière-plan
-./vendor/bin/sail up -d
-```
-
-### 3. Configurer l'application
-
-Une fois les conteneurs démarrés, exécutez les commandes suivantes dans le conteneur `app` :
+Ce projet inclut un fichier `Makefile` (`make`) pour automatiser la construction de l'environnement Docker et l'exécution des commandes.
 
 ```bash
-# Générer la clé d'application
-./vendor/bin/sail artisan key:generate
+# 1. Construire les images Docker, lancer les conteneurs et configurer les permissions
+make setup
 
-# Exécuter les migrations et populer la base de données avec des données de test
-./vendor/bin/sail artisan migrate --seed
+# 2. Installer les dépendances Composer dans le conteneur
+make composer-install
+
+# 3. Générer la clé d'application Laravel
+make artisan CMD="key:generate"
+
+# 4. Exécuter les migrations
+make migrate
+
+# 5. Peupler la base de données avec les données initiales
+make seed
 ```
 
-> **Note :** La commande `--seed` crée un compte Administrateur par défaut.
+> **Note :** La commande `make seed` crée un compte Administrateur par défaut.
 > **Email :** `admin@example.com`
 > **Mot de passe :** `password`
 
-### 4. Accéder à l'application
+### 3. Accéder à l'application
 
 - **Panel d'Administration (Filament) :** [http://localhost/admin](http://localhost/admin)
 - **Documentation de l'API (Swagger UI) :** [http://localhost/api/docs](http://localhost/api/docs)
