@@ -7,7 +7,23 @@ use ApiPlatform\Metadata\ApiResource;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-#[ApiResource]
+use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\DateFilter;
+
+#[ApiResource(
+    parameters: [
+        'reason' => new QueryParameter(filter: PartialSearchFilter::class),
+        'type' => new QueryParameter(filter: EqualsFilter::class),
+        'status' => new QueryParameter(filter: EqualsFilter::class),
+        'product_id' => new QueryParameter(filter: EqualsFilter::class),
+        'created_at' => new QueryParameter(filter: DateFilter::class),
+        'expiry_date' => new QueryParameter(filter: DateFilter::class),
+        'sort[:property]' => new QueryParameter(filter: OrderFilter::class),
+    ]
+)]
 class StockMovement extends Model
 {
     use HasFactory;

@@ -10,7 +10,17 @@ use ApiPlatform\Metadata\ApiResource;
 
 use Filament\Models\Contracts\FilamentUser;
 
-#[ApiResource]
+use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+
+#[ApiResource(
+    parameters: [
+        'name' => new QueryParameter(filter: PartialSearchFilter::class),
+        'email' => new QueryParameter(filter: PartialSearchFilter::class),
+        'sort[:property]' => new QueryParameter(filter: OrderFilter::class),
+    ]
+)]
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */

@@ -6,7 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use ApiPlatform\Metadata\ApiResource;
 
-#[ApiResource]
+use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+
+#[ApiResource(
+    parameters: [
+        'first_name' => new QueryParameter(filter: PartialSearchFilter::class),
+        'last_name' => new QueryParameter(filter: PartialSearchFilter::class),
+        'phone' => new QueryParameter(filter: PartialSearchFilter::class),
+        'status' => new QueryParameter(filter: EqualsFilter::class),
+        'sort[:property]' => new QueryParameter(filter: OrderFilter::class),
+    ]
+)]
 class Customer extends Model
 {
     use HasFactory;
