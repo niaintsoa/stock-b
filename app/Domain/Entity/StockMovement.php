@@ -3,7 +3,9 @@
 namespace App\Domain\Entity;
 
 use Illuminate\Database\Eloquent\Model;
+use ApiPlatform\Metadata\ApiResource;
 
+#[ApiResource]
 class StockMovement extends Model
 {
     protected $fillable = [
