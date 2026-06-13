@@ -15,6 +15,16 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
+    public static function getModelLabel(): string
+    {
+        return 'Produit';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Produits';
+    }
+
     protected static ?string $navigationIcon = 'heroicon-o-cube';
 
     protected static ?string $navigationGroup = 'Gestion des Produits';
@@ -98,6 +108,37 @@ class ProductResource extends Resource
                     ]),
             ])
             ->actions([
+                Tables\Actions\Action::make('add_stock')
+                    ->label('Mouvement stock')
+                    ->icon('heroicon-o-arrows-up-down')
+                    ->color('warning')
+                    ->form([
+                        Forms\Components\Select::make('type')
+                            ->label('Type de mouvement')
+                            ->options([
+                                'entry' => 'Entrée',
+                                'exit' => 'Sortie',
+                            ])
+                            ->required(),
+                        Forms\Components\TextInput::make('quantity')
+                            ->label('Quantité')
+                            ->numeric()
+                            ->required()
+                            ->minValue(1),
+                        Forms\Components\TextInput::make('reason')
+                            ->label('Motif'),
+                    ])
+                    ->action(function (Product $record, array $data) {
+                        $record->stockMovements()->create([
+                            'type' => $data['type'],
+                            'quantity' => $data['quantity'],
+                            'reason' => $data['reason'] ?? null,
+                            'status' => 'completed',
+                            'created_by' => auth()->id(),
+                            'updated_by' => auth()->id(),
+                        ]);
+                    })
+                    ->successNotificationTitle('Mouvement de stock enregistré'),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

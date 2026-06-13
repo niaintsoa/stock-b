@@ -7,13 +7,29 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class StockMovementsRelationManager extends RelationManager
 {
     protected static string $relationship = 'stockMovements';
 
-    protected static ?string $title = 'Mouvements de stock';
+    protected static ?string $recordTitleAttribute = 'id';
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return 'Mouvements de stock';
+    }
+
+    public static function getModelLabel(): string
+    {
+        return 'Mouvement';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Mouvements';
+    }
 
     public function form(Form $form): Form
     {
