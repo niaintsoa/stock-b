@@ -14,6 +14,8 @@ use ApiPlatform\Metadata\QueryParameter;
 use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
 use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
 
+use Laravel\Sanctum\HasApiTokens;
+
 #[ApiResource(
     parameters: [
         'name' => new QueryParameter(filter: PartialSearchFilter::class),
@@ -24,7 +26,7 @@ use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected static function newFactory()
     {

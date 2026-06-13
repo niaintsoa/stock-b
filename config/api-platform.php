@@ -69,7 +69,7 @@ return [
         'pagination_items_per_page' => 30,
         'pagination_maximum_items_per_page' => 30,
         'route_prefix' => '/api',
-        'middleware' => [],
+        'middleware' => ['auth:sanctum'],
     ],
 
     'pagination' => [
@@ -125,37 +125,12 @@ return [
 
     'swagger_ui' => [
         'enabled' => true,
-        // 'apiKeys' => [
-        //     'api' => [
-        //         'name' => 'Authorization',
-        //         'type' => 'header',
-        //     ],
-        // ],
-        // 'oauth' => [
-        //     'enabled' => true,
-        //     'type' => 'oauth2',
-        //     'flow' => 'authorizationCode',
-        //     'tokenUrl' => '',
-        //     'authorizationUrl' =>'',
-        //     'refreshUrl' => '',
-        //     'scopes' => ['scope1' => 'Description scope 1'],
-        //     'pkce' => true,
-        // ],
-        // 'license' => [
-        //     'name' => 'Apache 2.0',
-        //     'url' => 'https://www.apache.org/licenses/LICENSE-2.0.html',
-        // ],
-        // 'contact' => [
-        //     'name' => 'API Support',
-        //     'url' => 'https://www.example.com/support',
-        //     'email' => 'support@example.com',
-        // ],
-        // 'http_auth' => [
-        //     'Personal Access Token' => [
-        //         'scheme' => 'bearer',
-        //         'bearerFormat' => 'JWT',
-        //     ],
-        // ],
+        'http_auth' => [
+            'Bearer Token' => [
+                'scheme' => 'bearer',
+                'bearerFormat' => 'Personal Access Token',
+            ],
+        ],
     ],
 
     // 'openapi' => [

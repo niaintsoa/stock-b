@@ -11,7 +11,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->extend(\ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface::class, function ($factory, $app) {
+            return new \App\Infrastructure\OpenApi\OpenApiFactoryDecorator($factory);
+        });
     }
 
     /**
