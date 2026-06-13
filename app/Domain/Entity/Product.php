@@ -11,6 +11,11 @@ class Product extends Model
 {
     use HasFactory;
 
+    protected static function newFactory()
+    {
+        return \Database\Factories\Domain\Entity\ProductFactory::new();
+    }
+
     protected $fillable = [
         'name',
         'description',

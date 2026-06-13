@@ -11,6 +11,11 @@ class Customer extends Model
 {
     use HasFactory;
 
+    protected static function newFactory()
+    {
+        return \Database\Factories\Domain\Entity\CustomerFactory::new();
+    }
+
     protected $fillable = [
         'first_name',
         'last_name',
