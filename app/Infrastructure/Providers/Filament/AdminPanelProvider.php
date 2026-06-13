@@ -31,6 +31,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Infrastructure/Filament/Resources'), for: 'App\\Infrastructure\\Filament\\Resources')
             ->discoverPages(in: app_path('Infrastructure/Filament/Pages'), for: 'App\\Infrastructure\\Filament\\Pages')
+            ->pages([
+                \Filament\Pages\Dashboard::class,
+            ])
             ->discoverWidgets(in: app_path('Infrastructure/Filament/Widgets'), for: 'App\\Infrastructure\\Filament\\Widgets')
             ->middleware([
                 EncryptCookies::class,
