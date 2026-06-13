@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
-    protected $model = \App\Domain\User\Models\User::class;
+    protected $model = \App\Domain\Entity\User::class;
     /**
      * The current password being used by the factory.
      */
