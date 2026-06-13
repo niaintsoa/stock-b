@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('reason')->nullable();
             $table->string('status')->default('completed');
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
     }
