@@ -45,10 +45,16 @@ class CustomerResource extends Resource
                             ->required()
                             ->maxLength(255),
                         Forms\Components\TextInput::make('email')
-                            ->label('Email')
+                            ->label('Adresse E-mail')
                             ->email()
+                            ->required()
                             ->maxLength(255)
-                            ->unique(ignoreRecord: true),
+                            ->afterStateHydrated(function (Forms\Components\TextInput $component, ?Customer $record) {
+                                if ($record && $record->user) {
+                                    $component->state($record->user->email);
+                                }
+                            })
+                            ->dehydrated(false),
                         Forms\Components\TextInput::make('phone')
                             ->label('Téléphone')
                             ->tel()

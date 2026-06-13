@@ -8,8 +8,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use ApiPlatform\Metadata\ApiResource;
 
+use Filament\Models\Contracts\FilamentUser;
+
 #[ApiResource]
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -28,6 +30,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'profile_id',
+        'profile_type',
     ];
 
     /**
@@ -51,5 +55,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function profile()
+    {
+        return $this->morphTo();
+    }
+
+    public function canAccessPanel(\Filament\Panel $panel): bool
+    {
+        return $this->profile_type === Admin::class;
     }
 }
