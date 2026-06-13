@@ -19,10 +19,13 @@ class StockMovement extends Model
     protected $fillable = [
         'product_id',
         'quantity',
-        'type', // 'entry' ou 'exit'
+        'type',
         'reason',
         'status',
         'created_by',
+        'updated_by',
+        'expiry_date',
+        'parent_id',
     ];
 
     public function product()
@@ -33,5 +36,20 @@ class StockMovement extends Model
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(StockMovement::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(StockMovement::class, 'parent_id');
     }
 }

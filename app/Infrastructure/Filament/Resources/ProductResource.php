@@ -45,11 +45,21 @@ class ProductResource extends Resource
                             ->label('Description')
                             ->rows(3)
                             ->columnSpanFull(),
+                        Forms\Components\Toggle::make('allow_price_change')
+                            ->label('Modifier le prix')
+                            ->dehydrated(false)
+                            ->reactive()
+                            ->hiddenOn('create'),
                         Forms\Components\TextInput::make('price')
                             ->label('Prix')
                             ->required()
                             ->numeric()
-                            ->prefix('Ar'),
+                            ->prefix('Ar')
+                            ->disabled(fn (callable $get, string $operation): bool => $operation === 'edit' && !$get('allow_price_change')),
+                        Forms\Components\TextInput::make('price_change_reason')
+                            ->label('Motif du changement de prix')
+                            ->required(fn (callable $get): bool => (bool) $get('allow_price_change'))
+                            ->visible(fn (callable $get, string $operation): bool => $operation === 'edit' && $get('allow_price_change')),
                         Forms\Components\Select::make('status')
                             ->label('Statut')
                             ->options([
@@ -119,24 +129,40 @@ class ProductResource extends Resource
                                 'entry' => 'Entrée',
                                 'exit' => 'Sortie',
                             ])
+                            ->reactive()
                             ->required(),
                         Forms\Components\TextInput::make('quantity')
                             ->label('Quantité')
                             ->numeric()
                             ->required()
-                            ->minValue(1),
+                            ->minValue(1)
+                            ->rule(function (Product $record, callable $get) {
+                                return function (string $attribute, $value, \Closure $fail) use ($record, $get) {
+                                    if ($get('type') === 'exit' && $value > $record->current_stock) {
+                                        $fail("Stock insuffisant. Stock actuel : {$record->current_stock}");
+                                    }
+                                };
+                            }),
+                        Forms\Components\DatePicker::make('expiry_date')
+                            ->label('Date d\'expiration (Optionnel)')
+                            ->visible(fn (callable $get) => $get('type') === 'entry'),
                         Forms\Components\TextInput::make('reason')
                             ->label('Motif'),
                     ])
                     ->action(function (Product $record, array $data) {
-                        $record->stockMovements()->create([
-                            'type' => $data['type'],
-                            'quantity' => $data['quantity'],
-                            'reason' => $data['reason'] ?? null,
-                            'status' => 'completed',
-                            'created_by' => auth()->id(),
-                            'updated_by' => auth()->id(),
-                        ]);
+                        if ($data['type'] === 'exit') {
+                            $record->depleteStock((int) $data['quantity'], $data['reason'] ?? null, auth()->id());
+                        } else {
+                            $record->stockMovements()->create([
+                                'type' => 'entry',
+                                'quantity' => $data['quantity'],
+                                'reason' => $data['reason'] ?? null,
+                                'expiry_date' => $data['expiry_date'] ?? null,
+                                'status' => 'completed',
+                                'created_by' => auth()->id(),
+                                'updated_by' => auth()->id(),
+                            ]);
+                        }
                     })
                     ->successNotificationTitle('Mouvement de stock enregistré'),
                 Tables\Actions\EditAction::make(),

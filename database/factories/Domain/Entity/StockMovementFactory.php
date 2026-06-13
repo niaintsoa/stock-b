@@ -16,7 +16,8 @@ class StockMovementFactory extends Factory
         return [
             'product_id' => Product::factory(),
             'quantity' => fake()->numberBetween(1, 100),
-            'type' => fake()->randomElement(['entry', 'exit']),
+            'type' => 'entry',
+            'expiry_date' => fake()->optional(0.7)->dateTimeBetween('now', '+1 year'),
             'reason' => fake()->sentence(),
             'status' => 'completed',
             'created_by' => User::factory(),
